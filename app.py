@@ -5,6 +5,7 @@ from multiprocessing import Process
 from os import path
 from App.Database.database import Database
 
+
 class NodeApp:
 
     def __init__(self, config):
@@ -14,6 +15,7 @@ class NodeApp:
 
     def replicate(self, request_func, id_, data=None):
         for url in self.follower_urls:
+            print("tyt")
             request_func(path.join(url, id_), data=data)
 
     def database_info(self):
@@ -22,11 +24,15 @@ class NodeApp:
     def show_db_data(self):
         return str(self.database.data)
 
-    def get_all(self):
+    def get_all_keys(self):
         return pickle.dumps(self.database.data.keys())
 
     def get(self, id_):
-        return self.database.get(id_) or abort(404)
+        res = self.database.get(id_)
+        if res:
+            return self.database.get(id_)
+        else:
+            abort(404)
 
     def put(self, id_):
         self.database.set(id_, request.data.decode())
@@ -34,7 +40,7 @@ class NodeApp:
         process.start()
         if self.sync:
             process.join()
-        return 'success'
+        return 'done'
 
     def delete(self, id_):
         result = self.database.remove(id_)
@@ -42,4 +48,7 @@ class NodeApp:
         process.start()
         if self.sync:
             process.join()
-        return 'success' if result else abort(404)
+        if result:
+            return 'done'
+        else:
+            abort(404)

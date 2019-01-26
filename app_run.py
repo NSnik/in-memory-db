@@ -1,6 +1,6 @@
 from flask import Flask
 from app import NodeApp
-from App.Config.config_master import Config
+from App.Config.config_1 import Config
 
 app = Flask(__name__)
 node = NodeApp(Config)
@@ -20,9 +20,9 @@ def get_all_route():
     return node.show_db_data()
 
 
-@app.route('/all', methods=['GET'])
+@app.route('/keys', methods=['GET'])
 def get_all():
-    return node.get_all()
+    return node.get_all_keys()
 
 
 @app.route('/<id_>', methods=['PUT'])
